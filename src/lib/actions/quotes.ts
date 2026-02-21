@@ -5,16 +5,20 @@ import { getCurrentOrganizationId } from "@/lib/supabase/helpers";
 import { generateQuoteWithAI } from "@/lib/ai";
 import { generateQuotePdfBuffer } from "@/lib/pdf";
 import { sendQuoteEmail } from "@/lib/email/resend";
+import { redirect } from "next/navigation";
 
-export const generateQuoteFromRequest = async (formData: FormData) => {
+export async function generateQuoteFromRequest(
+  formData: FormData
+): Promise<void> {
+  const organizationId = await getCurrentOrganizationId();
+
   const customerId = String(formData.get("customer_id") || "");
   const request = String(formData.get("request") || "").trim();
 
   if (!customerId || !request) {
-    throw new Error("Customer and request are required.");
+    throw new Error("Missing required fields");
   }
 
-  const organizationId = await getCurrentOrganizationId();
   if (!organizationId) {
     throw new Error("Unauthorized");
   }
@@ -120,8 +124,9 @@ export const generateQuoteFromRequest = async (formData: FormData) => {
     throw new Error(itemsError.message);
   }
 
-  return quote.id as string;
-};
+  const quoteId = quote.id;
+  redirect(`/quotes/${quoteId}`);
+}
 
 export const generateQuotePdf = async (quoteId: string) => {
   const organizationId = await getCurrentOrganizationId();
