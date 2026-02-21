@@ -126,6 +126,7 @@ export async function generateQuoteFromRequest(
 
   const quoteId = quote.id;
   redirect(`/quotes/${quoteId}`);
+  return;
 }
 
 export const generateQuotePdf = async (quoteId: string) => {
