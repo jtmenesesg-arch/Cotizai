@@ -124,8 +124,7 @@ export async function generateQuoteFromRequest(
     throw new Error(itemsError.message);
   }
 
-  const quoteId = quote.id;
-  redirect(`/quotes/${quoteId}`);
+  redirect(`/quotes/${quote.id}`);
   return;
 }
 
